@@ -4,8 +4,14 @@ import tweepy
 import random
 import schedule
 import time
+from fastapi import FastAPI
 
-def main():
+# FastAPIのインスタンス作成
+app = FastAPI()
+
+# GETメソッドでルートURLにアクセスされたときの処理
+@app.get("/")
+async def root():
     pagenum = 24
 
     # WebページのURLを指定
@@ -89,25 +95,3 @@ def main():
     print(f"URL: {surname_url}")
 
     return surname, population, origin
-
-if __name__ == "__main__":
-    main()
-
-# Twitter APIの認証
-#auth = tweepy.OAuthHandler("API_KEY", "API_SECRET")
-#auth.set_access_token("ACCESS_TOKEN", "ACCESS_TOKEN_SECRET")
-#api = tweepy.API(auth)
-
-# ランダムな苗字をツイートする関数
-#def tweet_surname():
-#    rank = random.randint(5000, 10000)
-#    surname, population, origin = get_surname_data(rank)
-#    tweet = f"{rank}位: {surname}\n人口: {population}\n由来: {origin}"
-#    api.update_status(tweet)
-
-# 定期的にツイートするスケジュールを設定
-#schedule.every().hours.do(main)
-
-#while True:
-#    schedule.run_pending()
-#    time.sleep(1)

@@ -4,15 +4,100 @@ import tweepy
 import random
 import schedule
 import time
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import RedirectResponse
+import tweepy
+import uvicorn
 
 # FastAPIのインスタンス作成
 app = FastAPI()
 
+# Twitter APIの認証情報
+API_KEY = "A0beI8DQbzFx0MNg6FuIndvaN"
+API_SECRET = "6KNaOokf2WRsNTYIdt6mWjmgzGX8ThMFdkY60t3j6kH9bn3OHU"
+CALLBACK_URL = "http://localhost:8000/callback"  # Redirect URL
+ACCESS_TOKEN = "1826294471832809472-V0aT61aDHAZF5kWvFcaHteDNxGQcGY"
+ACCESS_TOKEN_SECRET = "G9wZ6NrSxJHMGjdyuIiFCGcJxsvRHj5cs30kr8OV1a71R"
+CLIENT_ID = "TnJ3aldrWHBLT1VkTVBTNm9TUXc6MTpjaQ"
+CLIENT_SECRET = "TaszIJSBASFZcpAjlKfh1V4ks8Fz39eQJf38KiCBc76a9jqbj9"
+BEARER_TOKEN = "AAAAAAAAAAAAAAAAAAAAAIHzvQEAAAAAzf5YRJufVBdAH8uFYUwlNV53ZsQ%3DLdyEpq2KwG43rOl1qr6H9pdTLesWlESkdj6XNULs2VNsinie8t"
+
+# Tweepyを初期化
+oauth2_user_handler = tweepy.OAuth2UserHandler(
+    client_id=CLIENT_ID,
+    redirect_uri=CALLBACK_URL,
+    scope=["tweet.read", "tweet.write"],
+    # Client Secret is only necessary if using a confidential client
+    client_secret=CLIENT_SECRET
+)
+
 # GETメソッドでルートURLにアクセスされたときの処理
 @app.get("/")
-async def root():
-    pagenum = 24
+async def home():
+    print("0000")
+
+    # 認証URLを取得
+    redirect_url = oauth2_user_handler.get_authorization_url()
+    print(redirect_url)
+    print("BBB")
+    return RedirectResponse(redirect_url)
+
+
+@app.get("/callback")
+async def callback(request: Request):
+    full_url = str(request.url)
+    print("B")
+    # 認証コードを取得
+    print("REQUEST DEBUG START")
+    print(full_url)
+    print("REQUEST DEBUG END")
+    access_token = oauth2_user_handler.fetch_token(full_url)
+    print("CCC")
+    client = tweepy.Client(access_token)
+    print("DDD")
+
+    # 認証トークンを取得
+    print(request)
+    oauth_token = request.args.get('oauth_token',default=' ',type=str)
+    oauth_verifier = request.args.get('oauth_verifier',default=' ',type=str)
+    #URLから oauth_token を取り出して、auth.request_token[‘oauth_token’] にセット
+    auth.request_token['oauth_token'] = oauth_token
+    #URLから、oauth_verifierを取り出して、oauth_token_secretにセット
+    auth.request_token['oauth_token_secret'] = oauth_verifier
+    #ここの処理は調べきれてません
+    auth.get_access_token(oauth_verifier)
+    #アクセストークンと、アクセルトークンシークレットをセット（通常のtweepyでツイートする処理と同様）
+    auth.set_access_token(auth.access_token,auth.access_token_secret)
+    api = tweepy.API(auth)
+    api.update_status("テスト")
+
+    print("End")
+    return {"message": "Tweet posted successfully!"}
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)
+
+'''
+# GETメソッドでルートURLにアクセスされたときの処理
+#@app.get("/")
+#async def root():
+    # Twitter APIの認証
+#    auth = tweepy.OAuthHandler("pQyY2hN379B5zNRKKmT6lfPOW", "7pZCSypQL6XvZ86PIDt9P0KM3x01Qh26Z2yvojCzDtQH9y6DZf")
+#    auth.set_access_token("1826294471832809472-dq3DLNHPqZlYNrM15FyMeP9TyQCvTf", "Vrsz3N3fYGiTGjdvpRegE1lDkz5gJAzeUuwVhu3MVr0kp")
+#    api = tweepy.API(auth)
+
+    
+
+    #パラメータ名を省略したい場合
+    #client = tweepy.Client(None, ck, cs, at, ats)
+
+    pagenum = random.randint(24, 79)
+    rank, surname, population, origin, surname_url = get_surname_data(pagenum)
+    client.create_tweet(text=f"苗字：{surname}\n順位：{rank}\n人口:{population}\n由来:{origin}\nURL:{surname_url}")
+
+def get_surname_data(pagenum):
+    #pagenum = 24
 
     # WebページのURLを指定
     ranking_url = f"https://myoji-yurai.net/prefectureRanking.htm?prefecture=%E5%85%A8%E5%9B%BD&page={pagenum}"
@@ -94,4 +179,5 @@ async def root():
     print(f"由来: {origin}")
     print(f"URL: {surname_url}")
 
-    return surname, population, origin
+    return rank, surname, population, origin, surname_url
+'''

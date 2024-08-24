@@ -15,7 +15,7 @@ app = FastAPI()
 # Twitter APIの認証情報
 API_KEY = "A0beI8DQbzFx0MNg6FuIndvaN"
 API_SECRET = "6KNaOokf2WRsNTYIdt6mWjmgzGX8ThMFdkY60t3j6kH9bn3OHU"
-CALLBACK_URL = "http://localhost:8000/callback"  # Redirect URL
+CALLBACK_URL = "https://surname-bot.onrender.com:8000/callback"  # Redirect URL
 ACCESS_TOKEN = "1826294471832809472-V0aT61aDHAZF5kWvFcaHteDNxGQcGY"
 ACCESS_TOKEN_SECRET = "G9wZ6NrSxJHMGjdyuIiFCGcJxsvRHj5cs30kr8OV1a71R"
 CLIENT_ID = "TnJ3aldrWHBLT1VkTVBTNm9TUXc6MTpjaQ"

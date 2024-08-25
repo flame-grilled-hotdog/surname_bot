@@ -45,6 +45,7 @@ async def home():
 
 @app.get("/callback")
 async def callback(request: Request):
+    print("A")
     full_url = str(request.url)
     print("B")
     # 認証コードを取得

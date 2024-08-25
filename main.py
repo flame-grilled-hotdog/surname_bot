@@ -92,5 +92,9 @@ async def callback(request: Request):
 
     return {"message": "Twitter認証が完了しました。自動ツイートが開始されます。"}
 
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy"}
+
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=10000)

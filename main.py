@@ -57,7 +57,7 @@ async def callback(request: Request):
     access_token = access_token['access_token']
     print(access_token)
     print("CCC")
-    client = tweepy.Client(access_token)
+    tweepy.Client(bearer_token=access_token,consumer_key=API_KEY,consumer_secret=API_SECRET,access_token=ACCESS_TOKEN,access_token_secret=ACCESS_TOKEN_SECRET)
     print("DDD")
     client.create_tweet(text="this is test post")
 

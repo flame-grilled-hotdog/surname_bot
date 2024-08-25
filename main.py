@@ -98,9 +98,10 @@ def get_surname_data(pagenum):
             n4 = i
             break
         i += 1
-    
-    surname_url_encode = urllib.parse.quote(surname_url)
 
+    encoded_name = urllib.parse.quote(surname)
+    surname_url_encode = f"https://myoji-yurai.net/searchResult.htm?myojiKanji={encoded_name}"
+    
     reading_selector = f"#content > div:nth-child({n4}) > p"
     reading = soup.select_one(reading_selector).get_text(strip=True)
     del_str = '【読み】'
@@ -128,8 +129,19 @@ def tweet_scheduled_message():
     except Exception as e:
         print(f"ツイートエラー: {e}")
 
+# アクセストークン取得関数
+def accesstoken_scheduled_fetch(full_url):
+    access_token = oauth2_user_handler.fetch_token(full_url)
+    print(access_token)
+    access_token = access_token['access_token']
+    print(access_token)
+    global client
+    client = tweepy.Client(bearer_token=access_token,consumer_key=API_KEY,consumer_secret=API_SECRET,access_token=ACCESS_TOKEN,access_token_secret=ACCESS_TOKEN_SECRET)
+    print("Twitterクライアントが初期化されました。")
+
 # APSchedulerのスケジューラー設定
-scheduler = BackgroundScheduler()
+tweet_scheduler = BackgroundScheduler()
+accesstoken_fetch_scheduler = BackgroundScheduler()
 
 # Tweepyを初期化
 oauth2_user_handler = tweepy.OAuth2UserHandler(
@@ -154,26 +166,14 @@ async def home():
 
 @app.get("/callback")
 async def callback(request: Request):
-    print("A")
     full_url = str(request.url)
-    print("B")
-    # 認証コードを取得
-    print("REQUEST DEBUG START")
-    print(full_url)
-    print("REQUEST DEBUG END")
-    access_token = oauth2_user_handler.fetch_token(full_url)
-    print(access_token)
-    access_token = access_token['access_token']
-    print(access_token)
-    global client
-    client = tweepy.Client(bearer_token=access_token,consumer_key=API_KEY,consumer_secret=API_SECRET,access_token=ACCESS_TOKEN,access_token_secret=ACCESS_TOKEN_SECRET)
-    print("Twitterクライアントが初期化されました。")
+    accesstoken_scheduled_fetch(full_url)
+
     # スケジューラーにジョブを追加（60分ごとに実行）
-    print("aaaaa")
-    scheduler.add_job(tweet_scheduled_message, 'interval', minutes=5)
-    print("bbbbb")
-    scheduler.start()
-    print("ccccc")
+    tweet_scheduler.add_job(tweet_scheduled_message, 'interval', minutes=5)
+    tweet_scheduler.start()
+    accesstoken_fetch_scheduler.add_job(accesstoken_scheduled_fetch, 'interval', minutes=100, args=[full_url])
+    accesstoken_fetch_scheduler.start()
 
     return {"message": "Twitter認証が完了しました。自動ツイートが開始されます。"}
 

@@ -8,6 +8,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import RedirectResponse
 import tweepy
 import uvicorn
+from apscheduler.schedulers.background import BackgroundScheduler
 
 # FastAPIのインスタンス作成
 app = FastAPI()

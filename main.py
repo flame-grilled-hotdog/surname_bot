@@ -167,7 +167,7 @@ async def callback(request: Request):
     print("Twitterクライアントが初期化されました。")
     # スケジューラーにジョブを追加（60分ごとに実行）
     print("aaaaa")
-    scheduler.add_job(tweet_scheduled_message, 'interval', minutes=1)
+    scheduler.add_job(tweet_scheduled_message, 'interval', minutes=5)
     print("bbbbb")
     scheduler.start()
     print("ccccc")

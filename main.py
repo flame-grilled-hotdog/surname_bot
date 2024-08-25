@@ -23,6 +23,26 @@ CLIENT_ID = "TnJ3aldrWHBLT1VkTVBTNm9TUXc6MTpjaQ"
 CLIENT_SECRET = "bLfu_Mf8Lnq7iUc5Vzk-DvdnlLCel6km3HoyTfqxaAg6Bqh7C5"
 BEARER_TOKEN = "AAAAAAAAAAAAAAAAAAAAAIHzvQEAAAAAg6gQiT61eMYsW1hsrkmMy4ee%2BaA%3DKvDOk2Eawyyjlly0k2eJ25JUZKdUIpWiXZO9JIoCZvOOTwFQD6"
 
+# グローバル変数でTwitterクライアントを保持
+client = None
+
+# 定期ツイート関数
+def tweet_scheduled_message():
+    global client
+    if client is None:
+        print("Twitterクライアントが初期化されていません。")
+        return
+
+    try:
+        message = "これは定期的に送信される自動ツイートです！"
+        client.create_tweet(text=message)
+        print("ツイートが送信されました！")
+    except Exception as e:
+        print(f"ツイートエラー: {e}")
+
+# APSchedulerのスケジューラー設定
+scheduler = BackgroundScheduler()
+
 # Tweepyを初期化
 oauth2_user_handler = tweepy.OAuth2UserHandler(
     client_id=CLIENT_ID,
@@ -57,10 +77,13 @@ async def callback(request: Request):
     print(access_token)
     access_token = access_token['access_token']
     print(access_token)
-    print("CCC")
     client = tweepy.Client(bearer_token=access_token,consumer_key=API_KEY,consumer_secret=API_SECRET,access_token=ACCESS_TOKEN,access_token_secret=ACCESS_TOKEN_SECRET)
-    print("DDD")
-    return client
+    print("Twitterクライアントが初期化されました。")
+    # スケジューラーにジョブを追加（60分ごとに実行）
+    scheduler.add_job(tweet_scheduled_message, 'interval', minutes=1)
+    scheduler.start()
+
+    return {"message": "Twitter認証が完了しました。自動ツイートが開始されます。"}
 
 def tweet_scheduled_message(client):
     try:

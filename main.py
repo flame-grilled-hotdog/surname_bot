@@ -11,19 +11,21 @@ import tweepy
 import uvicorn
 from apscheduler.schedulers.background import BackgroundScheduler
 import urllib.parse
+from dotenv import load_dotenv
 
 # FastAPIのインスタンス作成
 app = FastAPI()
 
 # Twitter APIの認証情報
-API_KEY = os.environ.get('API_KEY')
-API_SECRET = os.environ.get('API_SECRET')
-CALLBACK_URL = os.environ.get('CALLBACK_URL')  # Redirect URL
-ACCESS_TOKEN = os.environ.get('ACCESS_TOKEN')
-ACCESS_TOKEN_SECRET = os.environ.get('ACCESS_TOKEN_SECRET')
-CLIENT_ID = os.environ.get('CLIENT_ID')
-CLIENT_SECRET = os.environ.get('CLIENT_SECRET')
-BEARER_TOKEN = os.environ.get('BEARER_TOKEN')
+load_dotenv('.env')
+API_KEY = os.getenv('API_KEY')
+API_SECRET = os.getenv('API_SECRET')
+CALLBACK_URL = os.getenv('CALLBACK_URL')  # Redirect URL
+ACCESS_TOKEN = os.getenv('ACCESS_TOKEN')
+ACCESS_TOKEN_SECRET = os.getenv('ACCESS_TOKEN_SECRET')
+CLIENT_ID = os.getenv('CLIENT_ID')
+CLIENT_SECRET = os.getenv('CLIENT_SECRET')
+BEARER_TOKEN = os.getenv('BEARER_TOKEN')
 
 # グローバル変数でTwitterクライアントを保持
 client = None

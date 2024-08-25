@@ -92,17 +92,5 @@ async def callback(request: Request):
 
     return {"message": "Twitter認証が完了しました。自動ツイートが開始されます。"}
 
-def tweet_scheduled_message(client):
-    try:
-        message = "これは定期的に送信される自動ツイートです！"
-        client.create_tweet(text="this is test post schedule")
-    except Exception as e:
-        print(f"ツイートエラー: {e}")
-
-# APSchedulerのスケジューラー設定
-scheduler = BackgroundScheduler()
-scheduler.add_job(tweet_scheduled_message, 'interval', minutes=1, args=[client])  # 1分ごとに実行
-scheduler.start()
-
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=10000)

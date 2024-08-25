@@ -13,14 +13,14 @@ import uvicorn
 app = FastAPI()
 
 # Twitter APIの認証情報
-API_KEY = "A0beI8DQbzFx0MNg6FuIndvaN"
-API_SECRET = "6KNaOokf2WRsNTYIdt6mWjmgzGX8ThMFdkY60t3j6kH9bn3OHU"
-CALLBACK_URL = "https://surname-bot.onrender.com:8000/callback"  # Redirect URL
-ACCESS_TOKEN = "1826294471832809472-V0aT61aDHAZF5kWvFcaHteDNxGQcGY"
-ACCESS_TOKEN_SECRET = "G9wZ6NrSxJHMGjdyuIiFCGcJxsvRHj5cs30kr8OV1a71R"
+API_KEY = "Th1eN6F2u0amik9SAoxGH8KP9"
+API_SECRET = "E45UQI6kX07FTghvnLs6eUPAjHVMzb5MEjqcX9gWJy4tZ1aZD4"
+CALLBACK_URL = "https://surname-bot.onrender.com:10000/callback"  # Redirect URL
+ACCESS_TOKEN = "1826294471832809472-pDDHTSHoxnYGLAfDhKFYJL9ch8i8uH"
+ACCESS_TOKEN_SECRET = "Pa6TIxdGdK59F2aonhb1LZe79F2O5ZibOVAHSnuLyM6yk"
 CLIENT_ID = "TnJ3aldrWHBLT1VkTVBTNm9TUXc6MTpjaQ"
-CLIENT_SECRET = "TaszIJSBASFZcpAjlKfh1V4ks8Fz39eQJf38KiCBc76a9jqbj9"
-BEARER_TOKEN = "AAAAAAAAAAAAAAAAAAAAAIHzvQEAAAAAzf5YRJufVBdAH8uFYUwlNV53ZsQ%3DLdyEpq2KwG43rOl1qr6H9pdTLesWlESkdj6XNULs2VNsinie8t"
+CLIENT_SECRET = "bLfu_Mf8Lnq7iUc5Vzk-DvdnlLCel6km3HoyTfqxaAg6Bqh7C5"
+BEARER_TOKEN = "AAAAAAAAAAAAAAAAAAAAAIHzvQEAAAAAg6gQiT61eMYsW1hsrkmMy4ee%2BaA%3DKvDOk2Eawyyjlly0k2eJ25JUZKdUIpWiXZO9JIoCZvOOTwFQD6"
 
 # Tweepyを初期化
 oauth2_user_handler = tweepy.OAuth2UserHandler(
@@ -77,7 +77,7 @@ async def callback(request: Request):
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=10000)
 
 '''
 # GETメソッドでルートURLにアクセスされたときの処理

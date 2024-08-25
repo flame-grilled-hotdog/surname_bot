@@ -9,6 +9,7 @@ from fastapi.responses import RedirectResponse
 import tweepy
 import uvicorn
 from apscheduler.schedulers.background import BackgroundScheduler
+import urllib.parse
 
 # FastAPIのインスタンス作成
 app = FastAPI()
@@ -97,13 +98,15 @@ def get_surname_data(pagenum):
             n4 = i
             break
         i += 1
+    
+    surname_url_encode = urllib.parse.quote(surname_url)
 
     reading_selector = f"#content > div:nth-child({n4}) > p"
     reading = soup.select_one(reading_selector).get_text(strip=True)
     del_str = '【読み】'
     reading = reading.replace(del_str,'')
 
-    return rank, surname, reading, population, origin, surname_url
+    return rank, surname, reading, population, origin, surname_url_encode
 
 # 定期ツイート関数
 def tweet_scheduled_message():
@@ -115,9 +118,9 @@ def tweet_scheduled_message():
         return
     print("fffff")
     pagenum = random.randint(24, 79)
-    rank, surname, reading, population, origin, surname_url = get_surname_data(pagenum)
+    rank, surname, reading, population, origin, surname_url_encode = get_surname_data(pagenum)
     try:
-        message = f"ランク: {rank}\n苗字: {surname}（{reading}）\n人口: {population}\n由来: {origin}\nURL: {surname_url}\n"
+        message = f"ランク: {rank}\n苗字: {surname}（{reading}）\n人口: {population}\n由来: {origin}\nURL: {surname_url_encode}\n"
         print("ggggg")
         client.create_tweet(text=message)
         print("hhhhh")

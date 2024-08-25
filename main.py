@@ -81,6 +81,7 @@ async def callback(request: Request):
     print(access_token)
     access_token = access_token['access_token']
     print(access_token)
+    global client
     client = tweepy.Client(bearer_token=access_token,consumer_key=API_KEY,consumer_secret=API_SECRET,access_token=ACCESS_TOKEN,access_token_secret=ACCESS_TOKEN_SECRET)
     print("Twitterクライアントが初期化されました。")
     # スケジューラーにジョブを追加（60分ごとに実行）

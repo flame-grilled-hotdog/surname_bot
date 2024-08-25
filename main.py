@@ -1,3 +1,4 @@
+import os
 import requests
 from bs4 import BeautifulSoup
 import tweepy
@@ -10,19 +11,21 @@ import tweepy
 import uvicorn
 from apscheduler.schedulers.background import BackgroundScheduler
 import urllib.parse
+from dotenv import load_dotenv
 
 # FastAPIのインスタンス作成
 app = FastAPI()
 
 # Twitter APIの認証情報
-API_KEY = "Th1eN6F2u0amik9SAoxGH8KP9"
-API_SECRET = "E45UQI6kX07FTghvnLs6eUPAjHVMzb5MEjqcX9gWJy4tZ1aZD4"
-CALLBACK_URL = "https://surname-bot.onrender.com/callback"  # Redirect URL
-ACCESS_TOKEN = "1826294471832809472-pDDHTSHoxnYGLAfDhKFYJL9ch8i8uH"
-ACCESS_TOKEN_SECRET = "Pa6TIxdGdK59F2aonhb1LZe79F2O5ZibOVAHSnuLyM6yk"
-CLIENT_ID = "TnJ3aldrWHBLT1VkTVBTNm9TUXc6MTpjaQ"
-CLIENT_SECRET = "bLfu_Mf8Lnq7iUc5Vzk-DvdnlLCel6km3HoyTfqxaAg6Bqh7C5"
-BEARER_TOKEN = "AAAAAAAAAAAAAAAAAAAAAIHzvQEAAAAAg6gQiT61eMYsW1hsrkmMy4ee%2BaA%3DKvDOk2Eawyyjlly0k2eJ25JUZKdUIpWiXZO9JIoCZvOOTwFQD6"
+load_dotenv('.env')
+API_KEY = os.getenv('API_KEY')
+API_SECRET = os.getenv('API_SECRET')
+CALLBACK_URL = os.getenv('CALLBACK_URL')  # Redirect URL
+ACCESS_TOKEN = os.getenv('ACCESS_TOKEN')
+ACCESS_TOKEN_SECRET = os.getenv('ACCESS_TOKEN_SECRET')
+CLIENT_ID = os.getenv('CLIENT_ID')
+CLIENT_SECRET = os.getenv('CLIENT_SECRET')
+BEARER_TOKEN = os.getenv('BEARER_TOKEN')
 
 # グローバル変数でTwitterクライアントを保持
 client = None
@@ -101,7 +104,7 @@ def get_surname_data(pagenum):
 
     encoded_name = urllib.parse.quote(surname)
     surname_url_encode = f"https://myoji-yurai.net/searchResult.htm?myojiKanji={encoded_name}"
-    
+
     reading_selector = f"#content > div:nth-child({n4}) > p"
     reading = soup.select_one(reading_selector).get_text(strip=True)
     del_str = '【読み】'
@@ -121,7 +124,7 @@ def tweet_scheduled_message():
     pagenum = random.randint(24, 79)
     rank, surname, reading, population, origin, surname_url_encode = get_surname_data(pagenum)
     try:
-        message = f"ランク: {rank}\n苗字: {surname}（{reading}）\n人口: {population}\n由来: {origin}\nURL: {surname_url_encode}\n"
+        message = f"ランク: {rank}\n苗字: {surname}（{reading}）\n人口: {population}\n由来: {origin}\n {surname_url_encode}"
         print("ggggg")
         client.create_tweet(text=message)
         print("hhhhh")

@@ -45,7 +45,7 @@ def tweet_scheduled_message():
         print(f"ツイートエラー: {e}")
 
 # APSchedulerのスケジューラー設定
-scheduler = BlockingScheduler()
+scheduler = BackgroundScheduler()
 
 # Tweepyを初期化
 oauth2_user_handler = tweepy.OAuth2UserHandler(

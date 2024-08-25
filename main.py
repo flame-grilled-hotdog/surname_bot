@@ -13,6 +13,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 import urllib.parse
 from dotenv import load_dotenv
+import datetime
 
 # FastAPIのインスタンス作成
 app = FastAPI()
@@ -115,20 +116,15 @@ def get_surname_data(pagenum):
 
 # 定期ツイート関数
 def tweet_scheduled_message():
-    print("ddddd")
     global client
-    print("eeeee")
     if client is None:
         print("Twitterクライアントが初期化されていません。")
         return
-    print("fffff")
     pagenum = random.randint(24, 79)
     rank, surname, reading, population, origin, surname_url_encode = get_surname_data(pagenum)
     try:
         message = f"【ランク】 {rank}\n【苗字】 {surname}（{reading}）\n【人口】 {population}\n【由来】 {origin}\n {surname_url_encode}"
-        print("ggggg")
         client.create_tweet(text=message)
-        print("hhhhh")
         print("ツイートが送信されました！")
     except Exception as e:
         print(f"ツイートエラー: {e}")
@@ -159,12 +155,9 @@ oauth2_user_handler = tweepy.OAuth2UserHandler(
 # GETメソッドでルートURLにアクセスされたときの処理
 @app.get("/")
 async def home():
-    print("0000")
-
     # 認証URLを取得
     redirect_url = oauth2_user_handler.get_authorization_url()
     print(redirect_url)
-    print("BBB")
     return RedirectResponse(redirect_url)
 
 
@@ -179,6 +172,7 @@ async def callback(request: Request):
     tweet_scheduler.start()
     accesstoken_fetch_scheduler.add_job(accesstoken_scheduled_fetch, 'interval', minutes=100, args=[full_url])
     accesstoken_fetch_scheduler.start()
+    print(datetime.datetime.now())
 
     return {"message": "Twitter認証が完了しました。自動ツイートが開始されます。"}
 

@@ -54,10 +54,14 @@ async def callback(request: Request):
     print("REQUEST DEBUG END")
     access_token = oauth2_user_handler.fetch_token(full_url)
     print(access_token)
+    access_token = access_token['access_token']
+    print(access_token)
     print("CCC")
     client = tweepy.Client(access_token)
     print("DDD")
+    client = tweepy.Client("Access Token here")
 
+'''
     # 認証トークンを取得
     print(request)
     oauth_token = request.args.get('oauth_token',default=' ',type=str)
@@ -75,7 +79,7 @@ async def callback(request: Request):
 
     print("End")
     return {"message": "Tweet posted successfully!"}
-
+'''
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=10000)

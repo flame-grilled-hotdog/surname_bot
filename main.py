@@ -53,6 +53,7 @@ async def callback(request: Request):
     print(full_url)
     print("REQUEST DEBUG END")
     access_token = oauth2_user_handler.fetch_token(full_url)
+    print(access_token)
     print("CCC")
     client = tweepy.Client(access_token)
     print("DDD")

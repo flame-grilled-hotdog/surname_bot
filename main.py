@@ -59,7 +59,7 @@ async def callback(request: Request):
     print("CCC")
     client = tweepy.Client(access_token)
     print("DDD")
-    client = tweepy.Client("Access Token here")
+    client.create_tweet(text="this is test post")
 
 '''
     # 認証トークンを取得

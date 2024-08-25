@@ -10,6 +10,7 @@ from fastapi.responses import RedirectResponse
 import tweepy
 import uvicorn
 from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.cron import CronTrigger
 import urllib.parse
 from dotenv import load_dotenv
 
@@ -124,7 +125,7 @@ def tweet_scheduled_message():
     pagenum = random.randint(24, 79)
     rank, surname, reading, population, origin, surname_url_encode = get_surname_data(pagenum)
     try:
-        message = f"ランク: {rank}\n苗字: {surname}（{reading}）\n人口: {population}\n由来: {origin}\n {surname_url_encode}"
+        message = f"【ランク】 {rank}\n【苗字】 {surname}（{reading}）\n【人口】 {population}\n【由来】 {origin}\n {surname_url_encode}"
         print("ggggg")
         client.create_tweet(text=message)
         print("hhhhh")
@@ -172,8 +173,9 @@ async def callback(request: Request):
     full_url = str(request.url)
     accesstoken_scheduled_fetch(full_url)
 
-    # スケジューラーにジョブを追加（60分ごとに実行）
-    tweet_scheduler.add_job(tweet_scheduled_message, 'interval', minutes=5)
+    # スケジューラーにジョブを追加（ツイート：8-24時の間で20分ごとに実行　アクセストークン取得：100分ごとに取得）
+    trigger = CronTrigger(minute='*/20', hour='8-23')
+    tweet_scheduler.add_job(tweet_scheduled_message, trigger)
     tweet_scheduler.start()
     accesstoken_fetch_scheduler.add_job(accesstoken_scheduled_fetch, 'interval', minutes=100, args=[full_url])
     accesstoken_fetch_scheduler.start()

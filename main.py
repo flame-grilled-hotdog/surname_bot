@@ -28,14 +28,18 @@ client = None
 
 # 定期ツイート関数
 def tweet_scheduled_message():
+    print("ddddd")
     global client
+    print("eeeee")
     if client is None:
         print("Twitterクライアントが初期化されていません。")
         return
-
+    print("fffff")
     try:
         message = "これは定期的に送信される自動ツイートです！"
+        print("ggggg")
         client.create_tweet(text=message)
+        print("hhhhh")
         print("ツイートが送信されました！")
     except Exception as e:
         print(f"ツイートエラー: {e}")
@@ -80,8 +84,11 @@ async def callback(request: Request):
     client = tweepy.Client(bearer_token=access_token,consumer_key=API_KEY,consumer_secret=API_SECRET,access_token=ACCESS_TOKEN,access_token_secret=ACCESS_TOKEN_SECRET)
     print("Twitterクライアントが初期化されました。")
     # スケジューラーにジョブを追加（60分ごとに実行）
+    print("aaaaa")
     scheduler.add_job(tweet_scheduled_message, 'interval', minutes=1)
+    print("bbbbb")
     scheduler.start()
+    print("ccccc")
 
     return {"message": "Twitter認証が完了しました。自動ツイートが開始されます。"}
 

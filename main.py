@@ -14,6 +14,7 @@ from apscheduler.triggers.cron import CronTrigger
 import urllib.parse
 from dotenv import load_dotenv
 import datetime
+import unicodedata
 
 # FastAPIのインスタンス作成
 app = FastAPI()
@@ -112,7 +113,59 @@ def get_surname_data(pagenum):
     del_str = '【読み】'
     reading = reading.replace(del_str,'')
 
-    return rank, surname, reading, population, origin, surname_url_encode
+    # 各項目を整形
+    rank = f"【ランク】{rank}"
+    surname = f"【苗字】{surname}（{reading}）"
+    population = f"【人口】{population}"
+    origin = f"【由来】{origin}"
+    surname_url_encode = f"{surname_url_encode}" 
+
+    #文字数チェック
+    lencheckitem = [rank, surname, population, surname_url_encode]
+    origin_strlen = 0
+    except_origin_strlen = 0
+    for i in range(4):
+        except_origin_strlen += get_east_asian_width_count(lencheckitem[i])
+        i += 1
+    strlen = except_origin_strlen + get_east_asian_width_count(origin)
+    print(strlen)
+    if strlen > 280:
+        print("文字数超過のため由来の文章を削ります。")
+
+        #文字数調整
+        max_length = 280 - except_origin_strlen
+        truncated_text = truncate_text_to_length(origin, max_length)
+        origin = truncated_text
+
+    return rank, surname, population, origin, surname_url_encode
+
+# 文字数カウント関数
+def get_east_asian_width_count(text):
+    count = 0
+    for c in text:
+        if unicodedata.east_asian_width(c) in 'FWA':
+            count += 2
+        else:
+            count += 1
+    return count
+
+# 文章短縮関数
+def truncate_text_to_length(origin, max_length):
+    # 句点「。」で文章を区切る
+    sentences = origin.split('。')
+    
+    # 最後の要素が空なら削除（「。」で終わる場合の処理）
+    if sentences[-1] == '':
+        sentences.pop()
+    
+    # 文字数を確認しながら文章を削除
+    while get_east_asian_width_count('。'.join(sentences)) > max_length:
+        sentences.pop()  # 最後の文章を削除
+    
+    # 削った後の文章を再結合し、末尾に「。」を追加
+    truncated_text = '。'.join(sentences) + '。'
+    
+    return truncated_text
 
 # 定期ツイート関数
 def tweet_scheduled_message():
@@ -122,9 +175,9 @@ def tweet_scheduled_message():
         print("Twitterクライアントが初期化されていません。")
         return
     pagenum = random.randint(24, 79)
-    rank, surname, reading, population, origin, surname_url_encode = get_surname_data(pagenum)
+    rank, surname, population, origin, surname_url_encode = get_surname_data(pagenum)
     try:
-        message = f"【ランク】 {rank}\n【苗字】 {surname}（{reading}）\n【人口】 {population}\n【由来】 {origin}\n {surname_url_encode}"
+        message = f"{rank}\n{surname}\n{population}\n{origin}\n{surname_url_encode}"
         client.create_tweet(text=message)
         print("ツイートが送信されました！")
     except Exception as e:

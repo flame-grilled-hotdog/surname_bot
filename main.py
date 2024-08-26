@@ -116,6 +116,7 @@ def get_surname_data(pagenum):
 
 # 定期ツイート関数
 def tweet_scheduled_message():
+    print("ツイート生成を開始します。")
     global client
     if client is None:
         print("Twitterクライアントが初期化されていません。")
@@ -131,6 +132,7 @@ def tweet_scheduled_message():
 
 # アクセストークン取得関数
 def accesstoken_scheduled_fetch(full_url):
+    print("アクセストークン取得を開始します。")
     access_token = oauth2_user_handler.fetch_token(full_url)
     print(access_token)
     access_token = access_token['access_token']

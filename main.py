@@ -16,6 +16,7 @@ from dotenv import load_dotenv
 import datetime
 import unicodedata
 import csv
+import re
 
 # FastAPIのインスタンス作成
 app = FastAPI()
@@ -302,7 +303,7 @@ def tweet_scheduled_message():
     current_minute = current_time.minute
 
     # XX時00分の投稿の場合、管理人厳選苗字をツイートする。
-    if 20 <= current_minute <= 30:
+    if 40 <= current_minute <= 50:
         rank, surname, population, origin, surname_url_encode = get_selected_surname_data()
     else:
         pagenum = random.randint(24, 79)

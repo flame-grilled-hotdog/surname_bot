@@ -356,7 +356,7 @@ async def callback(request: Request):
     accesstoken_scheduled_fetch(full_url)
 
     # スケジューラーにジョブを追加（ツイート：8-24時の間で20分ごとに実行　アクセストークン取得：100分ごとに取得）
-    trigger = CronTrigger(minute='0,20,40,50', hour='23,0-14')
+    trigger = CronTrigger(minute='0,20,40,55', hour='23,0-14')
     tweet_scheduler.add_job(tweet_scheduled_message, trigger)
     tweet_scheduler.start()
     accesstoken_fetch_scheduler.add_job(accesstoken_scheduled_fetch, 'interval', minutes=100, args=[full_url])

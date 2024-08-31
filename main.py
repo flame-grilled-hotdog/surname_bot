@@ -137,6 +137,13 @@ def get_surname_data(pagenum):
         max_length = 280 - except_origin_strlen
         truncated_text = truncate_text_to_length(origin, max_length)
         origin = truncated_text
+    
+    # 結果を出力
+    print(rank)
+    print(surname)
+    print(population)
+    print(origin)
+    print(surname_url_encode)
 
     return rank, surname, population, origin, surname_url_encode
 
@@ -290,12 +297,12 @@ def tweet_scheduled_message():
         print("Twitterクライアントが初期化されていません。")
         return
     # 現在の時間を取得
-    current_time = datetime.now()
+    current_time = datetime.datetime.now()
     current_hour = current_time.hour
     current_minute = current_time.minute
 
     # XX時00分の投稿の場合、管理人厳選苗字をツイートする。
-    if 0 <= current_minute <= 10:
+    if 20 <= current_minute <= 30:
         rank, surname, population, origin, surname_url_encode = get_selected_surname_data()
     else:
         pagenum = random.randint(24, 79)

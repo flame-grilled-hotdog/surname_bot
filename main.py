@@ -260,7 +260,7 @@ def get_selected_surname_data():
     print(origin)
     print(surname_url_encode)
 
-    return rank, surname, reading, population, origin, surname_url_encode
+    return rank, surname, population, origin, surname_url_encode
 
 # 文字数カウント関数
 def get_east_asian_width_count(text):
@@ -303,7 +303,7 @@ def tweet_scheduled_message():
     current_minute = current_time.minute
 
     # XX時00分の投稿の場合、管理人厳選苗字をツイートする。
-    if 40 <= current_minute <= 50:
+    if 50 <= current_minute <= 59:
         rank, surname, population, origin, surname_url_encode = get_selected_surname_data()
     else:
         pagenum = random.randint(24, 79)
@@ -356,7 +356,7 @@ async def callback(request: Request):
     accesstoken_scheduled_fetch(full_url)
 
     # スケジューラーにジョブを追加（ツイート：8-24時の間で20分ごとに実行　アクセストークン取得：100分ごとに取得）
-    trigger = CronTrigger(minute='0,20,40', hour='23,0-14')
+    trigger = CronTrigger(minute='0,20,40,50', hour='23,0-14')
     tweet_scheduler.add_job(tweet_scheduled_message, trigger)
     tweet_scheduler.start()
     accesstoken_fetch_scheduler.add_job(accesstoken_scheduled_fetch, 'interval', minutes=100, args=[full_url])
